@@ -62,4 +62,3 @@ func GetUserByNickname(nickname string) *variables.User {
 	}
 	return &user
 }
-
