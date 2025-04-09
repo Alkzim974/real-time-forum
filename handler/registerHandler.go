@@ -31,9 +31,33 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uuid, err := uuid.NewV4()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	fmt.Println(userInfo)
 
+	    // Définir le cookie
+
+	cookie := http.Cookie{
+        Name:     "session",
+        Value:    uuid.String(),
+        Path:     "/",
+        MaxAge:   3600,
+        HttpOnly: true,
+        Secure:   true,
+        SameSite: http.SameSiteLaxMode,
+    }
+    http.SetCookie(w, &cookie)
+
+    w.Write([]byte("Inscription réussie et session créée !"))
+
+
 	bcryptPassword, err := bcrypt.GenerateFromPassword([]byte(userInfo.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	user := &variables.User{
 		ID:        uuid.String(),
@@ -48,3 +72,5 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	database.InsertUser(user)
 }
+
+

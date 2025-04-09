@@ -13,6 +13,7 @@ func main() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/register", handler.Register)
 	http.HandleFunc("/login", handler.Login)
+	http.HandleFunc("/logout", handler.Logout)
 	fmt.Println("Serveur démarré sur le port 8080...")
 	fmt.Println("http://localhost:8080")
 	// Démarre l'écoute sur le port 8080

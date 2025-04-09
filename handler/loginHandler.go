@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"real-time-forum/database"
 	"real-time-forum/variables"
 
+	"github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,7 +19,7 @@ type LoginResponse struct {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Bienvenue sur la page de connexion !")
+	// fmt.Fprintln(w, "Bienvenue sur la page de connexion !")
 	var user *variables.User
 	userLogin := LoginResponse{}
 	err := json.NewDecoder(r.Body).Decode(&userLogin)
@@ -40,6 +42,33 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid password", http.StatusUnauthorized)
 		return
 	} else {
-		fmt.Fprintln(w, "Login successful")
+		setCookie(w, user)
+		// fmt.Fprintln(w, "Login successful")
 	}
+}
+
+func setCookie(w http.ResponseWriter, user *variables.User) {
+    session_token, _ := uuid.NewV4()
+	// expireAt := time.Now().Add(time.Hour * 1)
+    cookie := http.Cookie{
+        Name:     "session",
+        Value:    base64.StdEncoding.EncodeToString(session_token.Bytes()),
+        Path:     "/",
+		MaxAge:  3600,
+        HttpOnly: true,
+    }
+	fmt.Println(cookie,user)
+    http.SetCookie(w, &cookie)
+}
+
+
+func GetCookieHandler(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		http.Error(w, "No cookie found", http.StatusNotFound)
+		return
+	}
+	fmt.Fprintln(w, "Cookie found:", cookie.Value)
+
+	w.Write([]byte("cookie found!"))
 }
