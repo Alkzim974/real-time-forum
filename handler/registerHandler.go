@@ -26,7 +26,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	userInfo := RegisterResponse{}
 	err := json.NewDecoder(r.Body).Decode(&userInfo)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println(err)
 		return
 	}
 
@@ -50,6 +50,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
     }
     http.SetCookie(w, &cookie)
 
+	
     w.Write([]byte("Inscription réussie et session créée !"))
 
 

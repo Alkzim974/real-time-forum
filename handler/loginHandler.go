@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,7 +18,7 @@ type LoginResponse struct {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	// fmt.Fprintln(w, "Bienvenue sur la page de connexion !")
+	fmt.Println("Bienvenue sur la page de connexion !")
 	var user *variables.User
 	userLogin := LoginResponse{}
 	err := json.NewDecoder(r.Body).Decode(&userLogin)
@@ -43,7 +42,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		setCookie(w, user)
-		// fmt.Fprintln(w, "Login successful")
+		fmt.Println("Login successful")
 	}
 }
 
@@ -52,13 +51,14 @@ func setCookie(w http.ResponseWriter, user *variables.User) {
 	// expireAt := time.Now().Add(time.Hour * 1)
     cookie := http.Cookie{
         Name:     "session",
-        Value:    base64.StdEncoding.EncodeToString(session_token.Bytes()),
+        Value:    session_token.String(),//base64.StdEncoding.EncodeToString(session_token.Bytes()),
         Path:     "/",
 		MaxAge:  3600,
         HttpOnly: true,
     }
 	fmt.Println(cookie,user)
     http.SetCookie(w, &cookie)
+	database.InsertSession(session_token.String(), user)
 }
 
 
