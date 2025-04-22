@@ -6,9 +6,7 @@ import (
 	"net/http"
 	"real-time-forum/database"
 	"real-time-forum/variables"
-	"time"
 )
-
 
 func Post(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Bienvenue sur la page de création de post !")
@@ -27,7 +25,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	post.User = user
-	post.Date = time.Now()
-	database.InsertPost(&post)	
-	
+	database.InsertPost(&post)
+
 }

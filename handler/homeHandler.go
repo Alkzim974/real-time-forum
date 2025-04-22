@@ -1,23 +1,21 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/database"
 )
 
-
 func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Bienvenue sur la page d’accueil !")
-	posts :=database.GetpostHome()
-	
+	posts := database.GetpostHome()
+
 	if len(posts) == 0 {
-		fmt.Fprintln(w, "Aucun post trouvé.")
+		RespondJson(w, http.StatusNotFound, map[string]any{
+			"error": "No Posts Found",
+		})
 	} else {
-		fmt.Fprintln(w, "Voici les posts :")
-		for _, post := range posts {
-			fmt.Fprintf(w, "Category: %s, Title: %s, Content: %s\n", post.Category, post.Title, post.Content)
-		}
+		RespondJson(w, http.StatusOK, map[string]any{
+			"Posts": posts,
+		})
 	}
-	displayUsers(w, r)
+	//displayUsers(w, r)
 }
