@@ -235,3 +235,35 @@ func DeleteSession(session_token string) {
 	fmt.Println("Session deleted")
 	
 }
+
+func GetNicknameByUserId(userID string) string {
+	var nickname string
+
+	GetData :=
+		`
+	SELECT nickname FROM users
+	WHERE id = ?;
+	`
+	fmt.Println(userID)
+	err := DB.QueryRow(GetData, userID).Scan(&nickname)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nickname	
+
+}
+
+func GetUserIdBySession(id string) string {
+	var userID string
+
+	GetData :=
+		`
+	SELECT user_id FROM sessions
+	WHERE id = ?;
+	`
+	err := DB.QueryRow(GetData, id).Scan(&userID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return userID
+}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"real-time-forum/database"
 	"real-time-forum/handler"
+	"real-time-forum/utils"
 	"text/template"
 
 	"github.com/gorilla/mux"
@@ -13,14 +14,23 @@ import (
 
 func main() {
 	database.InitDb()
+	hub := utils.NewHub()
+
     r := mux.NewRouter().StrictSlash(true)
     r.PathPrefix("/static/").Handler((http.StripPrefix("/static/", http.FileServer(http.Dir("./static/")))))
 	r.HandleFunc("/", index).Methods("GET")
-    r.HandleFunc("/home", handler.Home).Methods("GET")
+    //r.HandleFunc("/home", handler.Home).Methods("GET")
+	r.HandleFunc("/home", func(w http.ResponseWriter, r *http.Request) {
+		handler.Home(w, r, hub)
+	})
 	r.HandleFunc("/register", handler.Register).Methods("POST")
 	r.HandleFunc("/login", handler.Login).Methods("POST")
 	r.HandleFunc("/logout", handler.Logout).Methods("POST")
 	r.HandleFunc("/post", handler.Post).Methods("POST")
+
+	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		handler.WebSocketHandler(w, r, hub)
+	})
 
     fmt.Printf("Server Started on http://localhost%s/\n", ":8080")
     http.ListenAndServe(":8080", r)

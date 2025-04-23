@@ -27,3 +27,11 @@ type UserStatus struct {
 	Online         bool   `json:"online"`
 	HasNewMessage  bool   `json:"hasNewMessage"`
 }
+
+type Message struct {
+	Type 	  string    `json:"type"`
+	Sender    string    `json:"sender"`
+	Receiver  string    `json:"receiver"`
+	Content   string    `json:"content"`
+	Userlist  []string  `json:"userlist"`
+}

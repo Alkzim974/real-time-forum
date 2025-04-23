@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"real-time-forum/database"
+	"real-time-forum/utils"
 )
 
 
-func Home(w http.ResponseWriter, r *http.Request) {
+func Home(w http.ResponseWriter, r *http.Request, hub *utils.Hub) {
 	fmt.Fprintln(w, "Bienvenue sur la page d’accueil !")
 	posts :=database.GetpostHome()
 	
@@ -19,5 +20,15 @@ func Home(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Category: %s, Title: %s, Content: %s\n", post.Category, post.Title, post.Content)
 		}
 	}
-	displayUsers(w, r)
+	
+	userlist := hub.GetOnlineUsers()
+		if len(userlist) == 0 {
+		fmt.Fprintln(w, "Aucun utilisateur trouvé.")
+	} else {
+		fmt.Fprintln(w, "Voici les utilisateurs :")
+		for _, user := range userlist {
+			fmt.Fprintf(w, "Pseudo: %s\n", user)
+		}
+	}
+
 }

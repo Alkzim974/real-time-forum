@@ -1,3 +1,5 @@
+import { InitWS } from "./websocket.js";
+
 export function loadLogin() {
   const app = document.getElementById("app");
   app.innerHTML = `
@@ -34,8 +36,10 @@ export function loadLogin() {
 
     if (response.ok) {
       messageDiv.innerText = "Connexion réussie !";
+
       // Redirection vers la page d’accueil (SPA)
       navigateTo("home");
+      InitWS();
     } else {
       const errorText = await response.text();
       messageDiv.innerText = "Erreur : " + errorText;
