@@ -21,7 +21,7 @@ func main() {
 	r.HandleFunc("/", index).Methods("GET")
     //r.HandleFunc("/home", handler.Home).Methods("GET")
 	r.HandleFunc("/home", func(w http.ResponseWriter, r *http.Request) {
-		handler.Home(w, r, hub)
+		handler.Home(w, r)
 	})
 	r.HandleFunc("/register", handler.Register).Methods("POST")
 	r.HandleFunc("/login", handler.Login).Methods("POST")
@@ -31,6 +31,9 @@ func main() {
 	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		handler.WebSocketHandler(w, r, hub)
 	})
+
+	r.HandleFunc("/refreshUsers", handler.RefreshUser).Methods("GET")
+
 
     fmt.Printf("Server Started on http://localhost%s/\n", ":8080")
     http.ListenAndServe(":8080", r)

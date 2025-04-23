@@ -131,16 +131,20 @@ func GetCurrentUser(r *http.Request) *variables.User {
 
 }
 
-func GetAllUsers() []*variables.User {
-	rows, err := DB.Query("SELECT * FROM users")
+func GetAllUsers( r *http.Request) []map[string]any {
+	user := GetCurrentUser(r)
+	if user == nil {	
+		return nil
+	}
+	rows, err := DB.Query("SELECT * FROM users WHERE id != ?", user.ID)
 	if err != nil {
 		log.Println("Error getting users:", err)
 		return nil
 	}
 	defer rows.Close()
 
-	var users []*variables.User
-
+	var users []map[string]any
+	
 	for rows.Next() {
 		var user variables.User
 		err := rows.Scan(&user.ID, &user.Nickname, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.Password)
@@ -148,14 +152,36 @@ func GetAllUsers() []*variables.User {
 			log.Println("Erreur lors du scan d’un utilisateur :", err)
 			continue
 		}
-		users = append(users, &user)
-	}
+		users = append(users, map[string]any{
+		"user" : user,
+		"connected": checkIfUserConnected(user.ID),})
+}
 	if err := rows.Err(); err != nil {
 		log.Println("Error iterating over users:", err)
 		return nil
 	}
 	return users
 }
+
+func checkIfUserConnected(user_id string) bool {
+	var count int
+	GetData :=
+		`
+	SELECT COUNT(*) FROM sessions
+	WHERE user_id = ?
+	AND expiration > ?;
+	`
+	err := DB.QueryRow(GetData, user_id, time.Now()).Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if count > 0 {
+		return true
+	}
+	return false
+
+}
+
 
 func GetUserByID(id string) *variables.User {
 

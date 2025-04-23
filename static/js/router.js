@@ -13,6 +13,7 @@ window.logout = async function () {
 };
 
 window.navigateTo = function (page) {
+  document.getElementById("users").innerHTML = "";
   switch (page) {
     case "home":
       loadHome();

@@ -23,7 +23,15 @@ export async function loadHome() {
   let r = await resp.json();
   let posts = r.Posts;
   const app = document.getElementById("app");
-  app.innerHTML = formatPosts(posts);
+  if (r.Posts) {
+    app.innerHTML = formatPosts(posts);
+    displayUsers();
+    document.querySelector(".online").style.display = "block";
+    document.querySelector(".offline").style.display = "none";
+  } else {
+    document.querySelector(".online").style.display = "none";
+    document.querySelector(".offline").style.display = "block";
+  }
 }
 
 function formatPosts(posts) {
@@ -46,4 +54,41 @@ function formatPosts(posts) {
     result += postHTML;
   }
   return result;
+}
+
+function formatUsers(users) {
+  let result = "";
+  for (let i = 0; i < users.length; i++) {
+    let user = users[i].user;
+    let isConnected = users[i].connected;
+    let userHTML = `
+      <div class="users_user">
+        <h1 class="nickname">${user.nickname}</h1> ${
+      isConnected
+        ? `<span class="connected">•</span>`
+        : `<span class="disconnected">•</span>`
+    }
+      </div>
+    `;
+    result += userHTML;
+  }
+  return result;
+}
+
+function displayUsers() {
+  fetch("/refreshUsers")
+    .then((response) => {
+      if (!response.ok)
+        throw new Error("Erreur lors du chargement des utilisateurs");
+      return response.json();
+    })
+    .then((users) => {
+      const app = document.getElementById("users");
+      app.innerHTML = formatUsers(users.Users);
+    })
+    .catch((error) => {
+      const users = document.getElementById("users");
+      users.innerHTML = "";
+      console.log(error);
+    });
 }

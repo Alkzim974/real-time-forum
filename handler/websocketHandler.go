@@ -44,11 +44,10 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, hub *utils.Hub) {
 	for {
 		_, _, err := conn.ReadMessage()
 		if err != nil {
-			fmt.Println("Error reading message:", err)
+			fmt.Println("", err)
 			break
 		}
 
-		database.GetAllUsers()
 
 	}
 
