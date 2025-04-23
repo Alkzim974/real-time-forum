@@ -67,10 +67,7 @@ body {
 }
 
 #app {
-  margin-left: 2rem;
-  margin-right: 2rem;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin: 2rem;
 }
 
 /* Layout */
@@ -309,8 +306,106 @@ footer {
     color-scheme: dark;
   }
 
-  body {
+  body:not(.post) {
     background-color: var(--background);
     color: var(--foreground);
+  }
+}
+
+/* Post CSS - avec les noms de classes originaux */
+/* Corps de page pour les posts */
+body.post-page {
+  height: 100vh;
+  background-color: var(--background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+}
+
+/* Conteneur principal du post */
+.post {
+  background-color: var(--card);
+  padding: 2.5rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Titre du post */
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: left;
+  color: var(--card-foreground);
+}
+
+/* Information utilisateur */
+.user {
+  font-size: 1.2rem;
+  color: var(--muted-foreground);
+  text-align: left;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Contenu textuel du post */
+.texte {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--card-foreground);
+  margin-bottom: 2rem;
+  text-align: justify;
+}
+
+/* Pied de page du post */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+/* Media queries pour la responsivité */
+@media (max-width: 768px) {
+  .post {
+    padding: 1.5rem;
+    width: 90%;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .user {
+    font-size: 1rem;
+  }
+  
+  .texte {
+    font-size: 1rem;
+  }
+}
+
+/* Pour les écrans très petits */
+@media (max-width: 480px) {
+  .post {
+    padding: 1.25rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
   }
 }

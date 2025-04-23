@@ -1,7 +1,5 @@
 package variables
 
-import "time"
-
 type User struct {
 	ID        string `json:"id"`
 	Nickname  string `json:"nickname"`
@@ -14,18 +12,18 @@ type User struct {
 }
 
 type Post struct {
-	ID       int
-	Title    string
-	Content  string
-	Category string
-	Date 	 time.Time
-	User   	 *User // UUID
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Category string `json:"category"`
+	Date     string `json:"date"`
+	User     *User  `json:"user"`
 }
 
 type UserStatus struct {
-	Nickname       string `json:"nickname"`
-	Online         bool   `json:"online"`
-	HasNewMessage  bool   `json:"hasNewMessage"`
+	Nickname      string `json:"nickname"`
+	Online        bool   `json:"online"`
+	HasNewMessage bool   `json:"hasNewMessage"`
 }
 
 type Message struct {

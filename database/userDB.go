@@ -80,7 +80,7 @@ func InsertPost(post *variables.Post) {
 	VALUES (?, ?, ?, ?, ?);
 	`
 
-	_, err := DB.Exec(InsertData, post.Date, post.Title, post.Content, post.Category, post.User.ID)
+	_, err := DB.Exec(InsertData, time.Now(), post.Title, post.Content, post.Category, post.User.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -100,11 +100,13 @@ func GetPostByID(id int) *variables.Post {
 	}
 	for Rows.Next() {
 		var userID string
-		err = Rows.Scan(&post.ID, &post.Title, &post.Content, &post.Category, &userID)
+		var date time.Time
+		err = Rows.Scan(&post.ID, &post.Title, &post.Content, &post.Category, &userID, &date)
 		if err != nil {
 			log.Fatal(err)
 		}
 		post.User = GetUserByID(userID)
+		post.Date = date.Format("Mon 2 Jan 15:04")
 	}
 	return &post
 }
@@ -126,7 +128,7 @@ func GetCurrentUser(r *http.Request) *variables.User {
 
 	user := GetUserByID(userID)
 	return user
-	
+
 }
 
 func GetAllUsers() []*variables.User {
@@ -138,7 +140,7 @@ func GetAllUsers() []*variables.User {
 	defer rows.Close()
 
 	var users []*variables.User
-	
+
 	for rows.Next() {
 		var user variables.User
 		err := rows.Scan(&user.ID, &user.Nickname, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.Password)
@@ -147,14 +149,13 @@ func GetAllUsers() []*variables.User {
 			continue
 		}
 		users = append(users, &user)
-}
+	}
 	if err := rows.Err(); err != nil {
 		log.Println("Error iterating over users:", err)
 		return nil
 	}
 	return users
 }
-
 
 func GetUserByID(id string) *variables.User {
 
@@ -194,12 +195,13 @@ func GetpostHome() []*variables.Post {
 	for Rows.Next() {
 		var post variables.Post
 		var userID string
-		err = Rows.Scan(&post.ID, &post.Title, &post.Content, &post.Category, &userID, &post.Date)
+		var date time.Time
+		err = Rows.Scan(&post.ID, &post.Title, &post.Content, &post.Category, &userID, &date)
 		if err != nil {
 			log.Fatal(err)
 		}
 		post.User = GetUserByID(userID)
-		post.Date = time.Now()
+		post.Date = date.Format("Mon 2 Jan 15:04")
 		posts = append(posts, &post)
 	}
 	return posts
@@ -218,7 +220,7 @@ func InsertSession(session_token string, user *variables.User) {
 		log.Fatal(err)
 	}
 	fmt.Println("Session inserted")
-	
+
 }
 
 func DeleteSession(session_token string) {
