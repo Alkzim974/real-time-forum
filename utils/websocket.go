@@ -28,6 +28,7 @@ func (h *Hub) UnregisterClient(conn *websocket.Conn) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	delete(h.clients, conn)
+    h.BroadcastMessage([]byte(fmt.Sprintf("%s has left the chat", h.clients[conn])))
 }
 
 // BroadcastMessage envoie un message à tous les clients connectés
@@ -37,7 +38,7 @@ func (h *Hub) BroadcastMessage(message []byte) {
     
     // Conversion en string puis création d'un JSON
     messageString := string(message)
-    jsonMessage, _ := json.Marshal(map[string]string{"message": messageString})
+    jsonMessage, _ := json.Marshal(map[string]string{"connexion": messageString})
     
     for conn := range h.clients {
         err := conn.WriteMessage(websocket.TextMessage, jsonMessage)

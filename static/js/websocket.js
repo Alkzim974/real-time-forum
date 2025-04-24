@@ -1,3 +1,5 @@
+import { displayUsers } from "./home.js";
+
 export function InitWS() {
   const ws = new WebSocket("ws://localhost:8080/ws");
   ws.onopen = function (event) {
@@ -5,9 +7,12 @@ export function InitWS() {
   };
   ws.onclose = function (event) {
     console.log("WebSocket is closed now.");
-    if (event.wasClean) {
-      console.log("Connection closed cleanly");
-    }
+    // if (event.code !== 1000) {
+    //   console.error(
+    //     `🔁 Tentative de reconnexion dans ${reconnectInterval / 1000}s...`
+    //   );
+    //   setTimeout(InitWS, reconnectInterval);
+    // }
   };
   ws.onmessage = function (event) {
     console.log("Message from server ", event.data);
@@ -17,6 +22,12 @@ export function InitWS() {
       const message = data.message;
       const chatBox = document.getElementById("chat-box");
       chatBox.innerHTML += `<p>${message}</p>`;
+    } else if (data.connexion) {
+      displayUsers();
     }
+  };
+  ws.onerror = (error) => {
+    console.error("WebSocket error observed:", event);
+    ws.close();
   };
 }

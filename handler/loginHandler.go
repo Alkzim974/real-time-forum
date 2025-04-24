@@ -56,7 +56,6 @@ func setCookie(w http.ResponseWriter, user *variables.User) {
 		MaxAge:  3600,
         HttpOnly: true,
     }
-	fmt.Println(cookie,user)
     http.SetCookie(w, &cookie)
 	database.InsertSession(session_token.String(), user)
 }

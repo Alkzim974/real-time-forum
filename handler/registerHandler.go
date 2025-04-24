@@ -35,7 +35,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(userInfo)
 
 	    // Définir le cookie
 

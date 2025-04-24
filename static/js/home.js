@@ -75,7 +75,7 @@ function formatUsers(users) {
   return result;
 }
 
-function displayUsers() {
+export function displayUsers() {
   fetch("/refreshUsers")
     .then((response) => {
       if (!response.ok)

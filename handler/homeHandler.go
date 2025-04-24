@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"real-time-forum/database"
 )
@@ -33,7 +32,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 func RefreshUser(w http.ResponseWriter, r *http.Request){
 
 	allUser := database.GetAllUsers(r)
-fmt.Println(allUser)
 	if len(allUser) == 0 {
 		RespondJson(w, http.StatusNotFound, map[string]any{
 			"error": "No Users Found",

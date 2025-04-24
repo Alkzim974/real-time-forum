@@ -272,7 +272,6 @@ func GetNicknameByUserId(userID string) string {
 	SELECT nickname FROM users
 	WHERE id = ?;
 	`
-	fmt.Println(userID)
 	err := DB.QueryRow(GetData, userID).Scan(&nickname)
 	if err != nil {
 		log.Fatal(err)
