@@ -274,7 +274,6 @@ func GetNicknameByUserId(userID string) string {
 	`
 	err := DB.QueryRow(GetData, userID).Scan(&nickname)
 	if err != nil {
-		log.Fatal(err)
 	}
 	return nickname	
 
@@ -290,7 +289,6 @@ func GetUserIdBySession(id string) string {
 	`
 	err := DB.QueryRow(GetData, id).Scan(&userID)
 	if err != nil {
-		log.Fatal(err)
 	}
 	return userID
 }
