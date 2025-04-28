@@ -7,6 +7,7 @@ export function InitWS() {
   };
   ws.onclose = function (event) {
     console.log("WebSocket is closed now.");
+    console.log("Message from server ", event);
     // if (event.code !== 1000) {
     //   console.error(
     //     `🔁 Tentative de reconnexion dans ${reconnectInterval / 1000}s...`

@@ -36,7 +36,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, hub *utils.Hub) {
 	hub.RegisterClient(conn, nickname)
 
 	// Broadcast the message to all clients
-	hub.BroadcastMessage([]byte(fmt.Sprintf("%s has joined the chat", nickname)))//probleme a voir
+	hub.BroadcastMessage([]byte(fmt.Sprintf("%s has joined the chat", nickname)))
 	fmt.Println("Client connected:", nickname)
 	
 
@@ -52,4 +52,9 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, hub *utils.Hub) {
 	}
 
 	hub.UnregisterClient(conn)
+	fmt.Println(nickname, "s'est déconnecté — broadcast en cours")
+	hub.BroadcastMessage([]byte(fmt.Sprintf("%s has left the chat", nickname)))
+	fmt.Println("Client disconnected:", nickname)
+	
+	// Close the connection
 }

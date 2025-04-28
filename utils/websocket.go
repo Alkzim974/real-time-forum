@@ -26,10 +26,20 @@ func (h *Hub) RegisterClient(conn *websocket.Conn, nickname string) {
 }
 func (h *Hub) UnregisterClient(conn *websocket.Conn) {
 	h.mu.Lock()
-	defer h.mu.Unlock()
-	delete(h.clients, conn)
-    h.BroadcastMessage([]byte(fmt.Sprintf("%s has left the chat", h.clients[conn])))
+	nickname, ok := h.clients[conn]
+	if ok {
+		// Diffuse le message de déconnexion AVANT de supprimer
+		message := fmt.Sprintf("%s s'est déconnecté", nickname)
+		h.mu.Unlock() // On unlock ici pour éviter le deadlock avec BroadcastMessage
+		h.BroadcastMessage([]byte(message))
+
+		h.mu.Lock() // On relock pour continuer à modifier les clients
+		delete(h.clients, conn)
+	}
+	h.mu.Unlock()
+	conn.Close()
 }
+
 
 // BroadcastMessage envoie un message à tous les clients connectés
 func (h *Hub) BroadcastMessage(message []byte) {
