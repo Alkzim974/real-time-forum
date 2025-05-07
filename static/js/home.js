@@ -1,22 +1,4 @@
-// export function loadHome() {
-//   fetch("/home")
-//     .then((response) => {
-//       if (!response.ok) throw new Error("Erreur lors du chargement des posts");
-//       console.log(response.json())
-//       return response.json(); // car /home renvoie du HTML
-//     })
-//     .then((posts) => {
-//       console.log("HTML reçu :", html);
-//       const app = document.getElementById("app");
-//       app.innerHTML = formatPosts(posts);
-
-//     })
-//     .catch((error) => {
-//       console.error("Erreur :", error);
-//       document.getElementById("app").innerHTML =
-//         "<p>Impossible de charger les posts.</p>";
-//     });
-// }
+import { InitComment } from "./comment.js";
 
 export async function loadHome() {
   let resp = await fetch("/home");
@@ -24,37 +6,73 @@ export async function loadHome() {
   let posts = r.Posts;
   const app = document.getElementById("app");
   if (r.Posts) {
-    app.innerHTML = formatPosts(posts);
+    app.innerHTML = await formatPosts(posts);
     displayUsers(); // maybe to delete
     document.querySelector(".online").style.display = "block";
     document.querySelector(".offline").style.display = "none";
+    InitComment()
   } else {
     document.querySelector(".online").style.display = "none";
     document.querySelector(".offline").style.display = "block";
   }
+  
 }
 
-function formatPosts(posts) {
+async function formatPosts(posts) {
+  
   let result = "";
   for (let i = 0; i < posts.length; i++) {
     let post = posts[i];
+    let comments = await fetchComments(post.id);
     let postHTML = `
       <div class="post">
-      <h1 class="title">${post.title}</h1>
-      <h2 class="user">${post.user.nickname}</h2>
-    
-      <p class="content">${post.content}</p>
+        <h1 class="title">${post.title}</h1>
+        <h2 class="user">${post.user.nickname}</h2>
+        <p class="content">${post.content}</p>
+        <div class="footer">
+          <span class="date">${post.date}</span>
+          <span class="category">${post.category}</span>
+        </div>
 
-      <div class="footer">
-        <span class="date">${post.date}</span>
-        <span class="category">${post.category}</span>
+        <!-- Zone des commentaires -->
+        <div class="comments" id="comments-${post.id}">
+        ${formatComment(comments)}
+        </div>
+
+        <!-- Formulaire de commentaire -->
+        <form class="comment-form" data-post-id="${post.id}">
+          <input type="text" name="content" placeholder="Ajouter un commentaire" required />
+          <button>Envoyer</button>
+        </form>
       </div>
-    </div>
     `;
     result += postHTML;
   }
   return result;
 }
+
+async function fetchComments(postId) {
+    let response = await fetch(`/comment/${postId}`);
+    let r = await response.json();
+    return r.comments ? r.comments : [];
+}
+
+function formatComment(comments) {
+  let result = "";
+  for (let i = 0; i < comments.length; i++) {
+    let comment = comments[i];
+    let commentHTML = `
+      <div class="comment">
+        <h1 class="user">${comment.user.nickname}</h1>
+        <p class="content">${comment.content}</p>
+        <span class="date">${comment.created_at}</span>
+      </div>
+    `;
+    result += commentHTML;
+  }
+  return result;
+}
+
 
 function formatUsers(users) {
   let result = "";
