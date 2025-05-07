@@ -111,6 +111,7 @@ func GetPostByID(id int) *variables.Post {
 	return &post
 }
 
+
 func GetCurrentUser(r *http.Request) *variables.User {
 	cookie, err := r.Cookie("session")
 	if err != nil {
@@ -307,4 +308,82 @@ func GetUserIdBySession(id string) string {
 	if err != nil {
 	}
 	return userID
+}
+
+func InsertComment(comment *variables.Comment) {
+	query := `
+	INSERT INTO comments (content, post_id, user_id,created_at)
+	VALUES (?, ?, ?,?);`
+	_, err := DB.Exec(query, comment.Content, comment.PostID, comment.User.ID, time.Now())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Récupérer les commentaires d’un post
+func GetCommentsByPostID(postID int) []variables.Comment {
+	query := `
+	SELECT id, content, post_id, user_id, created_at
+	FROM comments
+	WHERE post_id = ?
+	ORDER BY created_at ASC;
+	`
+
+	rows, err := DB.Query(query, postID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var comments []variables.Comment
+
+	for rows.Next() {
+		var c variables.Comment
+		var userID string
+		var date time.Time
+		err := rows.Scan(&c.ID, &c.Content, &c.PostID, &userID, &date)
+		if err != nil {
+			log.Fatal(err)
+		}
+		c.User = GetUserByID(userID)
+		c.CreatedAt = date.Format("Mon 2 Jan 15:04")
+		comments = append(comments, c)
+	}
+	return comments
+}
+
+func InsertMessage(message *variables.Message) {
+	InsertData :=
+		`
+	INSERT INTO messages(sender_id, receiver_id, content, created_at)
+	VALUES (?, ?, ?, ?);
+	`
+
+	_, err := DB.Exec(InsertData, message.Sender, message.Receiver, message.Content, message.CreatedAt)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func GetMessages(sender string, receiver string) ([]*variables.Message,error) {
+	var messages []*variables.Message
+
+	GetData :=
+		`
+	SELECT sender_id, receiver_id, content, created_at FROM messages
+	WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?);
+	`
+	Rows, err := DB.Query(GetData, sender, receiver, receiver, sender)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for Rows.Next() {
+		var message variables.Message
+		err = Rows.Scan(&message.Sender, &message.Receiver, &message.Content, &message.CreatedAt)
+		if err != nil {
+			log.Fatal(err)
+		}
+		messages = append(messages, &message)
+	}
+	return messages, err
 }

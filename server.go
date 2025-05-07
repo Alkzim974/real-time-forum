@@ -34,6 +34,10 @@ func main() {
 
 	r.HandleFunc("/refreshUsers", handler.RefreshUser).Methods("GET")
 
+	r.HandleFunc("/comment", handler.CreateComment).Methods("POST")
+	r.HandleFunc("/comment/{id}", handler.GetComments).Methods("GET")
+
+	r.HandleFunc("/messages/{nickname}", handler.GetMessageHandler).Methods("GET")
 
     fmt.Printf("Server Started on http://localhost%s/\n", ":8080")
     http.ListenAndServe(":8080", r)

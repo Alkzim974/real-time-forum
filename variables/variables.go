@@ -26,10 +26,19 @@ type UserStatus struct {
 	HasNewMessage bool   `json:"hasNewMessage"`
 }
 
+
 type Message struct {
-	Type 	  string    `json:"type"`
-	Sender    string    `json:"sender"`
-	Receiver  string    `json:"receiver"`
-	Content   string    `json:"content"`
-	Userlist  []string  `json:"userlist"`
+	Type     string `json:"type"`
+	Sender   string `json:"sender"`
+	Receiver string `json:"receiver"`
+	Content  string `json:"content"`
+	CreatedAt string `json:"created_at"`
+}
+
+type Comment struct {
+	ID        int    `json:"id"`
+	PostID    int    `json:"post_id"`
+	User      *User  `json:"user"` // <- modifié ici pour que ça soit un string
+	Content   string `json:"content"`
+	CreatedAt string `json:"created_at"`
 }

@@ -1,6 +1,6 @@
 import { displayUsers } from "./home.js";
 
-export let ws;
+export let ws = null;
 
 export function InitWS() {
   ws = new WebSocket("ws://localhost:8080/ws");
@@ -15,16 +15,22 @@ export function InitWS() {
   };
 
   ws.onmessage = function (event) {
-    console.log("Message from server ", event.data);
+    console.log("Message from server ", JSON.parse(event.data));
 
     try {
       const data = JSON.parse(event.data);
-      console.log(1, data);
       // Si le message contient une information de connexion/déconnexion
       if (data.type === "log") {
         console.log("User connection update:", data.connexion);
         // Mettre à jour immédiatement la liste des utilisateurs
         displayUsers();
+      }
+      // Si le message contient une information de message
+      else if (data.type === "message") {
+        const chatBox = document.getElementById("chatBox");
+        if (chatBox && chatBox.dataset.nickname === data.sender) {
+          chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.content}</p>`;
+        }
       }
     } catch (e) {
       console.error("Error parsing message:", e);
@@ -35,4 +41,20 @@ export function InitWS() {
     console.error("WebSocket error observed:", error);
     ws.close();
   };
+}
+
+export function sendPrivateMessage(nickname, message) {
+  console.log(ws);
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(
+      JSON.stringify({
+        type: "message",
+        receiver: nickname,
+        content: message,
+        created_at: new Date(),
+      })
+    );
+  } else {
+    console.error("WebSocket is not open. Cannot send message.");
+  }
 }
