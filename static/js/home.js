@@ -1,3 +1,4 @@
+import { InitComment } from "./comment.js";
 import { chatBox } from "./message.js";
 
 export async function loadHome() {
@@ -20,12 +21,13 @@ export async function loadHome() {
     const app = document.getElementById("app");
 
     if (posts && posts.length > 0) {
-      app.innerHTML = formatPosts(posts);
-      displayUsers(); // Afficher la liste des utilisateurs
+      app.innerHTML = await formatPosts(posts);
+      displayUsers();
 
       // Basculer l'affichage de navigation vers online
       document.querySelector(".online").style.display = "block";
       document.querySelector(".offline").style.display = "none";
+      InitComment();
     } else {
       app.innerHTML = "<p>Aucun post disponible.</p>";
 
@@ -46,27 +48,60 @@ export async function loadHome() {
   }
 }
 
-function formatPosts(posts) {
+async function formatPosts(posts) {
   let result = "";
   for (let i = 0; i < posts.length; i++) {
     let post = posts[i];
+    let comments = await fetchComments(post.id);
     let postHTML = `
       <div class="post">
-      <h1 class="title">${post.title}</h1>
-      <h2 class="user">${post.user.nickname}</h2>
-    
-      <p class="content">${post.content}</p>
+        <h1 class="title">${post.title}</h1>
+        <h2 class="user">${post.user.nickname}</h2>
+        <p class="content">${post.content}</p>
+        <div class="footer">
+          <span class="date">${post.date}</span>
+          <span class="category">${post.category}</span>
+        </div>
 
-      <div class="footer">
-        <span class="date">${post.date}</span>
-        <span class="category">${post.category}</span>
+        <!-- Zone des commentaires -->
+        <div class="comments" id="comments-${post.id}">
+        ${formatComment(comments)}
+        </div>
+
+        <!-- Formulaire de commentaire -->
+        <form class="comment-form" data-post-id="${post.id}">
+          <input type="text" name="content" placeholder="Ajouter un commentaire" required />
+          <button>Envoyer</button>
+        </form>
       </div>
-    </div>
     `;
     result += postHTML;
   }
   return result;
 }
+
+async function fetchComments(postId) {
+  let response = await fetch(`/comment/${postId}`);
+  let r = await response.json();
+  return r.comments ? r.comments : [];
+}
+
+function formatComment(comments) {
+  let result = "";
+  for (let i = 0; i < comments.length; i++) {
+    let comment = comments[i];
+    let commentHTML = `
+      <div class="comment">
+        <h1 class="user">${comment.user.nickname}</h1>
+        <p class="content">${comment.content}</p>
+        <span class="date">${comment.created_at}</span>
+      </div>
+    `;
+    result += commentHTML;
+  }
+  return result;
+}
+
 function formatUsers(users) {
   let result = "";
   for (let i = 0; i < users.length; i++) {

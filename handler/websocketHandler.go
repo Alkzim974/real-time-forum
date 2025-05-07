@@ -63,6 +63,3 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request, hub *utils.Hub) {
 	}
 
 }
-
-
-
