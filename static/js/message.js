@@ -22,7 +22,9 @@ export async function chatBox(nickname) {
     const message = messageInput.value;
     if (message) {
       sendPrivateMessage(nickname, message);
-      chatBox.innerHTML += `<p><strong>Vous:</strong> ${message}</p>`;
+      chatBox.innerHTML += `<p><strong>Vous:</strong> ${message}</p><br>
+      <span class="date">${new Date().toLocaleString()}</span>`;
+      chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
       messageInput.value = ""; // Clear the input after sending
     }
   });
@@ -30,7 +32,12 @@ export async function chatBox(nickname) {
   fetchMessages(nickname)
     .then((messages) => {
       messages.forEach((message) => {
-        chatBox.innerHTML += `<p><strong>${message.sender}:</strong> ${message.content}</p>`;
+        chatBox.innerHTML += `<p><strong>${message.sender}:</strong> ${
+          message.content
+        }</p><br>
+        <span class="date">${new Date(
+          message.created_at
+        ).toLocaleString()}</span>`;
       });
     })
     .catch((error) => {

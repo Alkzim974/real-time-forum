@@ -26,7 +26,12 @@ export function InitWS() {
       } else if (data.type === "message") {
         const chatBox = document.getElementById("chatBox");
         if (chatBox && chatBox.dataset.nickname === data.sender) {
-          chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.content}</p>`;
+          chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${
+            data.content
+          }</p><br>
+          <span class="date">${new Date(
+            data.created_at
+          ).toLocaleString()}</span>`;
         } else {
           // Incrémenter le compteur de messages non lus
           incrementUnreadMessages(data.sender);
