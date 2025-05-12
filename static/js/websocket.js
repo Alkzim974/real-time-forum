@@ -1,6 +1,9 @@
 import { displayUsers } from "./home.js";
+import { incrementUnreadMessages, updateNotificationBadge } from "./message.js";
 
 export let ws = null;
+
+const unreadMessages = new Map(); // Pour stocker le nombre de messages non lus par utilisateur
 
 export function InitWS() {
   ws = new WebSocket("ws://localhost:8080/ws");
@@ -15,21 +18,19 @@ export function InitWS() {
   };
 
   ws.onmessage = function (event) {
-    console.log("Message from server ", JSON.parse(event.data));
-
     try {
       const data = JSON.parse(event.data);
-      // Si le message contient une information de connexion/déconnexion
       if (data.type === "log") {
         console.log("User connection update:", data.connexion);
-        // Mettre à jour immédiatement la liste des utilisateurs
         displayUsers();
-      }
-      // Si le message contient une information de message
-      else if (data.type === "message") {
+      } else if (data.type === "message") {
         const chatBox = document.getElementById("chatBox");
         if (chatBox && chatBox.dataset.nickname === data.sender) {
           chatBox.innerHTML += `<p><strong>${data.sender}:</strong> ${data.content}</p>`;
+        } else {
+          // Incrémenter le compteur de messages non lus
+          incrementUnreadMessages(data.sender);
+          updateNotificationBadge(data.sender);
         }
       }
     } catch (e) {

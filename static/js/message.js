@@ -1,6 +1,11 @@
 import { sendPrivateMessage, ws } from "./websocket.js";
 
+const unreadMessages = new Map();
+
 export async function chatBox(nickname) {
+  // Effacer les notifications
+  clearNotifications(nickname);
+
   const app = document.getElementById("users");
   app.innerHTML = `
       <h2>Chat avec ${nickname}</h2>
@@ -41,5 +46,44 @@ async function fetchMessages(nickname) {
   } else {
     console.error("Erreur lors de la récupération des messages");
     return [];
+  }
+}
+
+export function incrementUnreadMessages(sender) {
+  const count = unreadMessages.get(sender) || 0;
+  unreadMessages.set(sender, count + 1);
+}
+
+export function updateNotificationBadge(sender) {
+  const userDiv = document.querySelector(
+    `.users_user .nickname[data-nickname="${sender}"]`
+  )?.parentElement;
+  if (!userDiv) return;
+
+  let badge = userDiv.querySelector(".notification-badge");
+  const count = unreadMessages.get(sender) || 0;
+
+  if (!badge) {
+    badge = document.createElement("div");
+    badge.className = "notification-badge";
+    userDiv.appendChild(badge);
+  }
+
+  badge.textContent = count;
+  badge.classList.add("active");
+  badge.classList.add("pulse");
+  setTimeout(() => badge.classList.remove("pulse"), 500);
+}
+
+function clearNotifications(sender) {
+  unreadMessages.delete(sender);
+  const userDiv = document.querySelector(
+    `.users_user .nickname[data-nickname="${sender}"]`
+  )?.parentElement;
+  if (!userDiv) return;
+
+  const badge = userDiv.querySelector(".notification-badge");
+  if (badge) {
+    badge.classList.remove("active");
   }
 }

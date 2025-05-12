@@ -114,6 +114,7 @@ function formatUsers(users) {
 
     let nicknameHeading = document.createElement("h1");
     nicknameHeading.className = "nickname";
+    nicknameHeading.setAttribute("data-nickname", user.nickname);
     nicknameHeading.textContent = user.nickname;
 
     let statusSpan = document.createElement("span");
