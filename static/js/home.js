@@ -103,6 +103,31 @@ function formatComment(comments) {
 }
 
 function formatUsers(users) {
+  // Trier les utilisateurs
+  users.sort((a, b) => {
+    // D'abord par statut de connexion (connectés en premier)
+    if (a.connected !== b.connected) {
+      return b.connected - a.connected;
+    }
+    // Ensuite par ordre alphabétique pour les non connectés
+    if (!a.connected && !b.connected) {
+      return a.user.nickname.localeCompare(b.user.nickname);
+    }
+    return 0;
+  });
+
+  // Déplacer l'expéditeur du dernier message en haut de la liste
+  const lastMessageSender = localStorage.getItem("lastMessageSender");
+  if (lastMessageSender) {
+    const senderIndex = users.findIndex(
+      (u) => u.user.nickname === lastMessageSender
+    );
+    if (senderIndex !== -1) {
+      const [sender] = users.splice(senderIndex, 1);
+      users.unshift(sender);
+    }
+  }
+
   let result = "";
   for (let i = 0; i < users.length; i++) {
     let user = users[i].user;
