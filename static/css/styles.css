@@ -414,7 +414,20 @@ body.post-page {
 }
 
 /* Contenu textuel d'users */
+#chatBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
+  /* Ajout pour scroll */
+  max-height: 550px; /* hauteur estimée pour ~10 messages */
+  overflow-y: auto;
+}
 #users {
   display: flex;
   flex-direction: column;

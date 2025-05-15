@@ -116,18 +116,6 @@ function formatUsers(users) {
     return 0;
   });
 
-  // Déplacer l'expéditeur du dernier message en haut de la liste
-  const lastMessageSender = localStorage.getItem("lastMessageSender");
-  if (lastMessageSender) {
-    const senderIndex = users.findIndex(
-      (u) => u.user.nickname === lastMessageSender
-    );
-    if (senderIndex !== -1) {
-      const [sender] = users.splice(senderIndex, 1);
-      users.unshift(sender);
-    }
-  }
-
   let result = "";
   for (let i = 0; i < users.length; i++) {
     let user = users[i].user;

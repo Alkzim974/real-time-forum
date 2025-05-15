@@ -1,0 +1,185 @@
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --muted: #666;
+  --border: #e5e5e5;
+  --primary: #18181b;
+  --card-bg: #f9f9f9;
+  --accent: #7c3aed;
+  --badge-bg: red;
+  --badge-color: white;
+}
+
+.dark {
+  --bg: #09090b;
+  --fg: #f5f5f5;
+  --muted: #aaa;
+  --border: #27272a;
+  --primary: #f5f5f5;
+  --card-bg: #1c1c1e;
+  --accent: #c084fc;
+  --badge-bg: red;
+  --badge-color: white;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+button {
+  cursor: pointer;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--card-bg);
+}
+
+#app,
+#users {
+  padding: 1rem;
+}
+
+/* Post Card */
+.post {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.post .title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.post .user {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.post .content {
+  margin: 0.5rem 0;
+}
+
+.post .footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Comment */
+.comment {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* Form */
+.comment-form {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-form input[type="text"] {
+  flex: 1;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: var(--fg);
+}
+
+/* Users */
+.users_user {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  margin-bottom: 0.3rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.users_user .nickname {
+  font-weight: bold;
+}
+
+.connected {
+  color: green;
+}
+.disconnected {
+  color: grey;
+}
+
+/* Chat */
+#chatBox {
+  margin: 1rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+}
+
+/* Badge */
+.notification-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--badge-bg);
+  color: var(--badge-color);
+  font-size: 0.75rem;
+  border-radius: 50%;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: 0.3rem;
+}
+.notification-badge.pulse {
+  animation: pulse 0.5s;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

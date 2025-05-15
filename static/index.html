@@ -19,6 +19,7 @@
       <button onclick="navigateTo('home')">Accueil</button>
       <button onclick="logout()">Déconnexion</button>
       <button onclick="navigateTo('post')">Créer un post</button>
+      <span id="welcome-message"> Welcom Nickname</span>
     </nav>
 
     <nav class="offline">
@@ -29,5 +30,24 @@
 
     <div id="app"></div>
     <div id="users"></div>
+
+    <script>
+      function toggleTheme() {
+        document.documentElement.classList.toggle("dark");
+        localStorage.setItem(
+          "theme",
+          document.documentElement.classList.contains("dark") ? "dark" : "light"
+        );
+      }
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+    <button
+      onclick="toggleTheme()"
+      style="position: fixed; top: 1rem; right: 1rem"
+    >
+      🌗
+    </button>
   </body>
 </html>

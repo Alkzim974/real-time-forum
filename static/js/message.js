@@ -39,6 +39,7 @@ export async function chatBox(nickname) {
           message.created_at
         ).toLocaleString()}</span>`;
       });
+      chatBox.scrollTop = chatBox.scrollHeight;
     })
     .catch((error) => {
       console.error("Erreur lors de la récupération des messages", error);
